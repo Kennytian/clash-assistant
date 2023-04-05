@@ -1,6 +1,7 @@
 {
-  "name": "second-app",
+  "name": "clash-app",
   "private": true,
+  "author": { "name": "Kenny Tian", "email": "kt.tian@gmail.com" },
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -10,17 +11,17 @@
     "tauri": "tauri dev"
   },
   "dependencies": {
-    "@tauri-apps/api": "^2.0.0-alpha.1",
+    "@tauri-apps/api": "2.0.0-alpha.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0-alpha.4",
-    "@types/node": "^18.15.7",
-    "@types/react": "^18.0.28",
+    "@tauri-apps/cli": "2.0.0-alpha.6",
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",
-    "typescript": "^5.0.2",
+    "typescript": "^5.0.3",
     "vite": "^4.2.1"
   }
 }
