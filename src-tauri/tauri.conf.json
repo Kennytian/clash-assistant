@@ -7,14 +7,56 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "second-app",
-    "version": "0.0.0"
+    "productName": "Clash 小助手",
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
       "all": false,
       "shell": {
-        "all": false,
+        "all": true,
+        "execute": true,
+        "sidecar": true,
+        "open": true,
+        "scope": [
+          {
+            "name": "run-echo",
+            "cmd": "echo",
+            "args": ["message"]
+          },
+          {
+            "name": "run-list",
+            "cmd": "ls",
+            "args": ["-la"]
+          },
+          {
+            "name": "npm",
+            "cmd": "npm",
+            "args": true
+          },
+          {
+            "name": "sh",
+            "cmd": "sh",
+            "args": ["-c", { "validator": "\\S+" }]
+          },
+          {
+            "name": "cmd",
+            "cmd": "cmd",
+            "args": ["/C", { "validator": "\\S+" }]
+          },
+          {
+            "name": "run-git-commit",
+            "cmd": "git",
+            "args": ["commit", "-m", { "validator": "\\S+" }]
+          },
+          {
+            "name": "node",
+            "cmd": "node",
+            "args": ["-v"]
+          }
+        ]
+      },
+      "dialog": {
         "open": true
       }
     },
@@ -40,9 +82,10 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "second-app",
-        "width": 800,
-        "height": 600
+        "center": true,
+        "title": "Clash 小助手",
+        "width": 1024,
+        "height": 800
       }
     ]
   }
