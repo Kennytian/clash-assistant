@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Button } from "antd";
 import { Command } from "@tauri-apps/api/shell";
 import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
@@ -19,6 +20,7 @@ function App() {
         console.log(`后端发给前端的消息： ${event.payload} ${new Date()}`);
       });
     }
+
     f();
 
     return () => {
@@ -26,6 +28,10 @@ function App() {
         unlisten();
       }
     };
+  }, []);
+
+  useEffect(() => {
+    listen("c_event", (event) => console.log(event));
   }, []);
 
   function runWithError() {
@@ -152,6 +158,15 @@ function App() {
         <button onClick={openDialog}>openDialog</button>
         <button onClick={emitMessage}>向Rust发消息</button>
       </div>
+
+      <Button
+        onClick={async () => {
+          const rustMessage: string = await invoke("greet2", { name: "Kenny" });
+          console.log(rustMessage);
+        }}
+      >
+        调用命令 & 监听传来的消息
+      </Button>
     </div>
   );
 }

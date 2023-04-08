@@ -1,7 +1,10 @@
 {
   "name": "clash-assistant",
   "private": true,
-  "author": { "name": "Kenny Tian", "email": "kt.tian@gmail.com" },
+  "author": {
+    "name": "Kenny Tian",
+    "email": "kt.tian@gmail.com"
+  },
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -14,6 +17,8 @@
   "dependencies": {
     "@tauri-apps/api": "2.0.0-alpha.2",
     "react": "^18.2.0",
+    "antd": "^4.21.7",
+    "lodash": "^4.17.21",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
@@ -22,6 +27,12 @@
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react": "^3.1.0",
+    "cross-env": "^7.0.3",
+    "customize-cra": "^1.0.0",
+    "less": "^4.1.2",
+    "less-loader": "^11.0.0",
+    "react-app-rewired": "^2.2.1",
+    "react-scripts": "5.0.1",
     "typescript": "^5.0.3",
     "vite": "^4.2.1"
   }

@@ -1,9 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod commands;
+
 use serde::{Deserialize, Serialize};
 use std::{
     error::Error,
+    fmt::format,
     thread::{sleep, spawn},
     time::Duration,
 };
@@ -22,6 +25,12 @@ struct MyMessage {
 #[command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+#[command]
+fn greet2(name: &str, window: tauri::Window) -> String {
+    window.emit("c_event", "我来自后端");
+    format!("Hello {}", name)
 }
 
 #[command]
@@ -105,7 +114,8 @@ fn main() {
             command_with_message,
             command_with_object,
             command_with_error,
-            async_command
+            async_command,
+            greet2
         ])
         .run(generate_context!())
         .expect("error while running tauri application");
