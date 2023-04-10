@@ -76,6 +76,10 @@
     "security": {
       "csp": null
     },
+    "systemTray": {
+      "iconAsTemplate": true,
+      "iconPath": "icons/icon.ico"
+    },
     "updater": {
       "active": false
     },

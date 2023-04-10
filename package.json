@@ -12,17 +12,18 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "tauri:dev": "RUST_BACKTRACE=1 tauri dev"
+    "tauri:dev": "RUST_BACKTRACE=full tauri dev"
   },
   "dependencies": {
     "@tauri-apps/api": "2.0.0-alpha.2",
-    "react": "^18.2.0",
     "antd": "^4.21.7",
     "lodash": "^4.17.21",
+    "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "2.0.0-alpha.6",
+    "@types/lodash": "^4.14.192",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
@@ -33,7 +34,7 @@
     "less-loader": "^11.0.0",
     "react-app-rewired": "^2.2.1",
     "react-scripts": "5.0.1",
-    "typescript": "^5.0.3",
+    "typescript": "^5.0.4",
     "vite": "^4.2.1"
   }
 }

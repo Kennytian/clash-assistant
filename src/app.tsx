@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button } from "antd";
+import { Button, Input } from "antd";
 import { Command } from "@tauri-apps/api/shell";
 import { invoke } from "@tauri-apps/api/tauri";
 import { open } from "@tauri-apps/api/dialog";
+import { throttle } from "lodash";
 import { emit, listen } from "@tauri-apps/api/event";
 import reactLogo from "./assets/react.svg";
 import "./app.css";
@@ -11,6 +12,25 @@ function App() {
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
   const [filePath, setFilePath] = useState("");
+  const [url, setUrl] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingPerson, setIsLoadingPerson] = useState(false);
+  const [videoInfo, setVideoInfo] = useState([]);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [progress, setProgress] = useState({});
+
+  useEffect(() => {
+    listen(
+      "e_download_progress",
+      throttle(({ payload }) => {
+        setProgress({
+          ...progress,
+          [payload.id]: ~~((payload.current / payload.total) * 100),
+        });
+      }, 300)
+    );
+  }, []);
 
   useEffect(() => {
     let unlisten: any;
@@ -109,19 +129,49 @@ function App() {
     emit("front-to-back", "我是从前端传过来的值");
   }
 
+  async function getId() {
+    try {
+      const id = await invoke("get_url_id", { addr: url });
+      const info = await invoke("get_video_info_by_id", { id });
+      setVideoInfo([info]);
+    } catch (e) {
+      alert(JSON.stringify(e));
+    }
+  }
+
+
+  async function onPerson() {
+    setIsLoadingPerson(true);
+
+    try {
+      const { video_count, uid } = await invoke("get_user_info_by_url", {addr: url});
+      try {
+        const info = await invoke("get_list_by_user_id", {uid, count: video_count, maxCursor:0});
+        setVideoInfo(info);
+
+      }catch (e) {
+        alert(JSON.stringify(e));
+      }
+    } catch (e) {
+      alert(JSON.stringify(e));
+    }
+
+    setIsLoadingPerson(false);
+  }
+
   return (
     <div className="container">
       <h1>Welcome to Tauri!</h1>
 
       <div className="row">
         <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
+          <img src="/vite.svg" className="logo vite" alt="Vite logo"/>
         </a>
         <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
+          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo"/>
         </a>
         <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+          <img src={reactLogo} className="logo react" alt="React logo"/>
         </a>
       </div>
 
@@ -167,6 +217,18 @@ function App() {
       >
         调用命令 & 监听传来的消息
       </Button>
+
+      <Input
+        className="url"
+        onChange={({ target }) => {
+          setUrl(target.value);
+        }}
+      />
+      <Button loading={isLoading} onClick={getId}/>
+      <Button loading={isLoadingPerson} onClick={onPerson}>取个人视频</Button>
+      <Button>取个人点赞视频</Button>
+      <Button>取个人收藏视频</Button>
+      <Button>取 tag 视频</Button>
     </div>
   );
 }

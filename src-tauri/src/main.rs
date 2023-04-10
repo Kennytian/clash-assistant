@@ -11,8 +11,9 @@ use std::{
     time::Duration,
 };
 use tauri::{
-    command, generate_context, generate_handler, App, AppHandle, Builder, Event, EventHandler,
-    Manager, Window,
+    command, generate_context, generate_handler, App, AppHandle, Builder, CustomMenuItem, Event,
+    EventHandler, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, Window,
+    Wry,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -105,6 +106,23 @@ fn setup_entry(app: &mut App) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+fn build_system_tray_menu() -> SystemTrayMenu {
+    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
+    let hide: CustomMenuItem = CustomMenuItem::new("hide".to_string(), "Hide");
+
+    let system_tray_menu = SystemTrayMenu::new()
+        .add_item(quit)
+        .add_native_item(SystemTrayMenuItem::Separator)
+        .add_item(hide);
+
+    system_tray_menu
+}
+
+fn build_system_tray() -> SystemTray {
+    let system_tray: SystemTray = SystemTray::new().with_menu(build_system_tray_menu());
+    system_tray
+}
+
 fn main() {
     Builder::default()
         .setup(setup_entry)
@@ -115,8 +133,51 @@ fn main() {
             command_with_object,
             command_with_error,
             async_command,
-            greet2
+            greet2,
+            // commands
+            commands::get_url_id,
+            commands::get_video_info_by_id,
+            commands::get_video_full_info_by_id,
+            commands::download_video,
+            commands::get_user_info_by_url,
+            commands::get_user_full_info_by_url,
+            commands::get_list_by_user_id,
         ])
+        .system_tray(build_system_tray())
+        .on_system_tray_event(|app: &AppHandle<Wry>, event: SystemTrayEvent| match event {
+            SystemTrayEvent::LeftClick {
+                position: _,
+                size: _,
+                ..
+            } => {
+                println!("System tray received a left click");
+            }
+            SystemTrayEvent::RightClick {
+                position: _,
+                size: _,
+                ..
+            } => {
+                println!("System tray received a right click");
+            }
+            SystemTrayEvent::DoubleClick {
+                position: _,
+                size: _,
+                ..
+            } => {
+                println!("System tray received a double click");
+            }
+            SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
+                "quit" => {
+                    std::process::exit(0);
+                }
+                "hide" => {
+                    let window = app.get_window("main").unwrap();
+                    window.hide().unwrap();
+                }
+                _ => {}
+            },
+            _ => {}
+        })
         .run(generate_context!())
         .expect("error while running tauri application");
 }
