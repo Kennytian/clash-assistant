@@ -13,6 +13,7 @@ function App() {
   const [name, setName] = useState("");
   const [filePath, setFilePath] = useState("");
   const [url, setUrl] = useState("");
+  const [ip, setIP] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingPerson, setIsLoadingPerson] = useState(false);
@@ -139,17 +140,21 @@ function App() {
     }
   }
 
-
   async function onPerson() {
     setIsLoadingPerson(true);
 
     try {
-      const { video_count, uid } = await invoke("get_user_info_by_url", {addr: url});
+      const { video_count, uid } = await invoke("get_user_info_by_url", {
+        addr: url,
+      });
       try {
-        const info = await invoke("get_list_by_user_id", {uid, count: video_count, maxCursor:0});
+        const info = await invoke("get_list_by_user_id", {
+          uid,
+          count: video_count,
+          maxCursor: 0,
+        });
         setVideoInfo(info);
-
-      }catch (e) {
+      } catch (e) {
         alert(JSON.stringify(e));
       }
     } catch (e) {
@@ -159,19 +164,31 @@ function App() {
     setIsLoadingPerson(false);
   }
 
+  type GetIPType = { origin: string, server: string };
+  async function getIP() {
+    const { origin: ip, server }: GetIPType = await invoke("get_ip");
+    console.log("ip=====", ip, server);
+    setIP(ip);
+  }
+  async function getIP2() {
+    const { origin: ip, server }: GetIPType = await invoke("get_ip2");
+    console.log("ip=====", ip, server);
+    setIP(ip);
+  }
+
   return (
     <div className="container">
       <h1>Welcome to Tauri!</h1>
 
       <div className="row">
         <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo"/>
+          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
         </a>
         <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo"/>
+          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
         </a>
         <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo"/>
+          <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
 
@@ -208,6 +225,14 @@ function App() {
         <button onClick={openDialog}>openDialog</button>
         <button onClick={emitMessage}>向Rust发消息</button>
       </div>
+      <div className="row">
+        <span>{ip}</span>
+        <Button onClick={getIP}>获取 IP</Button>
+      </div>
+      <div className="row">
+        <span>{ip}</span>
+        <Button onClick={getIP2}>获取 IP2</Button>
+      </div>
 
       <Button
         onClick={async () => {
@@ -224,8 +249,10 @@ function App() {
           setUrl(target.value);
         }}
       />
-      <Button loading={isLoading} onClick={getId}/>
-      <Button loading={isLoadingPerson} onClick={onPerson}>取个人视频</Button>
+      <Button loading={isLoading} onClick={getId} />
+      <Button loading={isLoadingPerson} onClick={onPerson}>
+        取个人视频
+      </Button>
       <Button>取个人点赞视频</Button>
       <Button>取个人收藏视频</Button>
       <Button>取 tag 视频</Button>

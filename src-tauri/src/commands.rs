@@ -83,7 +83,7 @@ pub async fn get_video_info_by_id(id: &str) -> Result<VideoInfo, String> {
         .unwrap_or("")
         .replace("playwm", "play");
 
-    if url.len() == 0 {
+    if url.is_empty() {
         return Err("此视频地址无效".into());
     }
 

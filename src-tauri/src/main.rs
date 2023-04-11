@@ -2,11 +2,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod commands;
+mod query;
+mod news;
 
 use serde::{Deserialize, Serialize};
 use std::{
     error::Error,
-    fmt::format,
     thread::{sleep, spawn},
     time::Duration,
 };
@@ -29,7 +30,7 @@ fn greet(name: &str) -> String {
 }
 
 #[command]
-fn greet2(name: &str, window: tauri::Window) -> String {
+fn greet2(name: &str, window: Window) -> String {
     window.emit("c_event", "我来自后端");
     format!("Hello {}", name)
 }
@@ -142,6 +143,8 @@ fn main() {
             commands::get_user_info_by_url,
             commands::get_user_full_info_by_url,
             commands::get_list_by_user_id,
+            query::get_ip,
+            query::get_ip2,
         ])
         .system_tray(build_system_tray())
         .on_system_tray_event(|app: &AppHandle<Wry>, event: SystemTrayEvent| match event {
